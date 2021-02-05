@@ -1,0 +1,9 @@
+$('.ab').focus(function () {
+        $(this).css({ 'background-color': '#333FFF' });
+        $(this).css({ 'color': '#FEFEFD' });
+    });
+
+    $('.ab').blur(function () {
+        $(this).css({ 'background-color': '#FBFCFC' });
+        $(this).css({ 'color': '#17202A' });
+    });

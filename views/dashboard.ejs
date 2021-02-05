@@ -1,0 +1,19 @@
+<h1 class="mt-4">Dashboard</h1>
+<p class="lead mb-3">Welcome </p>
+
+<script>
+    $.ajaxSetup({
+        headers: {
+            'x-access-token': $.cookie('token')
+        }
+    })
+    $(document).ready(function (e) {
+        $.ajax({
+            url: '/dash',
+            method: 'GET',
+            success: function (dta) {
+                console.log('succes: ' + dta);
+            }
+        });
+    })
+</script>

@@ -1,0 +1,177 @@
+<table class="table table-bordered table-responsive">
+    <tr>
+        <td>INVOICE NO</td>
+        <td><input class="form-control ab" type="text" id="bno" name="bno" placeholder="INVOICE NO" /></td>
+        <td>DATE</td>
+        <td><input class="form-control ab" type="date" id="bdate" name="bdate" placeholder="DATE" /></td>
+    </tr>
+    <tr>
+        <td>SUPPLIER</td>
+        <td colspan="3"><input class="form-control ab" type="text" placeholder="SUPPLIER" name="supply" id="supply" />
+        </td>
+    </tr>
+    <tr>
+        <td>CURRENT BALANCE</td>
+        <td colspan="3"><label id="cbal" class="form-control"></label></td>
+    </tr>
+</table>
+<table id="jqgrid1" class="cl_et"></table>
+<div id="pager"></div>
+
+<div id="dlg">
+    <table class="table table-bordered table-responsive">
+        <tr>
+            <td colspan="2"><label id="suupl" class="form-control"></label></td>
+        </tr>
+        <tr>
+            <td>ADDRESS</td>
+            <td>
+                <textarea rows="4" cols="3" id="addr" name="addr" class="form-control" placeholder="ADDRESS"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>STATE</td>
+            <td><input type="text" class="form-control ab" placeholder="STATE" id="state" name="state" /></td>
+        </tr>
+        <tr>
+            <td>GSTIN</td>
+            <td><input type="text" class="form-control ab" placeholder="GSTIN" id="gstin" name="gstin" /></td>
+        </tr>
+    </table>
+</div>
+
+<div id="dlg1">
+    <form id="add">
+        <table class="table table-bordered table-hover table-sm">
+            <tr>
+                <td colspan="2">
+                    <input type="hidden" name="id" id="id" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>ITEM NAME</td>
+                <td><input class="form-control ab" type="text" placeholder="ITEM NAME" name="item" id="item" required />
+                </td>
+            </tr>
+            <tr>
+                <td>HSN CODE</td>
+                <td><input class="form-control ab" type="text" placeholder="HSN CODE" name="hsn" id="hsn" />
+                </td>
+            </tr>
+            <tr>
+                <td>RATE</td>
+                <td><input class="form-control ab" type="number" step="any" placeholder="RATE" name="rate" id="rate"
+                        required />
+                </td>
+            </tr>
+            <tr>
+                <td>GST RATE</td>
+                <td><input class="form-control ab" type="number" placeholder="GST RATE" name="grate" id="grate"
+                        required /></td>
+            </tr>
+            <tr>
+                <td>QUANTITY</td>
+                <td><input class="form-control ab" type="number" placeholder="QUANTITY" name="qty" id="qty" required />
+                </td>
+            </tr>
+            <tr>
+                <td>QUANTITY IN HAND</td>
+                <td><input class="form-control ab" type="number" placeholder="QUANTITY IN HAND" name="qtyh" id="qtyh"
+                        required />
+                    <input class="form-control ab" type="hidden" name="qtyh1" id="qtyh1" />
+                </td>
+            </tr>
+            <tr>
+                <td>U.O.M</td>
+                <td><input class="form-control ab" type="text" placeholder="U.O.M" name="uom" id="uom" required /></td>
+            </tr>
+            <tr>
+                <td>DISCOUNT</td>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control ab" type="number" step="any" placeholder="DISCOUNT RATE"
+                                name="disc1" id="disc1" required />
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control ab" type="number" step="any" placeholder="DISCOUNT AMOUNT"
+                                name="discamt" id="discamt" required />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>TOTAL</td>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control ab" type="number" step="any" placeholder="TOTAL" name="total"
+                                id="total" required />
+                        </div>
+                        <div class="col-sm-6"><input class="form-control ab" type="number" step="any"
+                                placeholder="TOTAL" name="total1" id="total1" required /></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>PROJECT NAME</td>
+                <td><input class="form-control ab" type="text" placeholder="PROJECT NAME" name="project" id="project"
+                        required /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save" class="btn btn-info btn-sm" id="add-btn" />
+                    <input type="reset" value="Reset" class="btn btn-danger btn-sm" id="rst-btn" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div id='loader' style="
+display: none;
+position: fixed;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+width: 200px;
+height: 100px;
+margin: auto;
+z-index: 10000;">
+    <img src='/Reload-1s-200px.gif' width='195px' height='98px'>
+</div>
+
+<table class="table table-bordered table-responsive">
+    <tr>
+        <td>GROSS TOTAL</td>
+        <td colspan="5"><input type="number" step="any" class="form-control ab" placeholder="GROSS TOTAL" id="gtot"
+                name="gtot" /></td>
+        <td>DISCOUNT</td>
+        <td><input type="number" step="any" class="form-control ab" placeholder="DISCOUNT" id="disc" name="disc" /></td>
+    </tr>
+    <tr>
+        <td>CGST</td>
+        <td><input type="number" step="any" class="form-control ab" placeholder="CGST" id="cgst" name="cgst" />
+        </td>
+        <td>SGST</td>
+        <td><input type="number" step="any" class="form-control ab" placeholder="SGST" id="sgst" name="sgst" />
+        </td>
+        <td>IGST</td>
+        <td><input type="number" step="any" class="form-control ab" placeholder="IGST" id="igst" name="igst" />
+        </td>
+        <td>ROUND OFF</td>
+        <td><input type="number" step="any" class="form-control ab" placeholder="ROUND OFF" id="rof" name="rof" /></td>
+    </tr>
+    <tr>
+        <td>NET TOTAL</td>
+        <td colspan="6"><input type="number" step="any" class="form-control ab" placeholder="NET TOTAL" id="ntot"
+                name="ntot" /></td>
+        <td>
+            <button class="btn btn-sm btn-success" id="fsave">Save Invoice</button>
+        </td>
+    </tr>
+</table>
+
+<script src="/js/bills/purc.js"></script>

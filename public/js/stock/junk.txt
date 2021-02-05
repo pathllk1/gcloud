@@ -1,0 +1,219 @@
+15-11-2020
+$.ajax({
+        type: "GET",
+        url: '/stock/list_stock',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $('#lstTable_stock tbody').empty();
+            var dt = "";
+            $.each(data, function (i, x) {
+                dt += "<tr>";
+                dt += "<td>" + x.item + "</td>";
+                dt += "<td>" + x.hsn + "</td>";
+                dt += "<td>" + x.qty + "</td>";
+                dt += "<td>" + x.rate + "</td>";
+                dt += "<td>" + x.total + "</td>";
+                dt += "</tr>";
+            });
+            $("#lstTable_stock_tbody").append(dt);
+        },
+        error: function (e) {
+            alert(JSON.stringify(e));
+        }
+    })
+
+    $("#fetch_stock").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#lstTable_stock_tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("fetch_stock");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("lstTable_stock");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+
+function myFunction1() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("fetch_stock_reg");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("lstTable_stock_reg");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[3];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+
+function load_tbl() {
+    $.ajax({
+        type: "GET",
+        url: '/stock/list_stock_reg',
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $('#lstTable_stock_reg tbody').empty();
+            var dt = "";
+            $.each(data, function (i, x) {
+                dt += "<tr>";
+                dt += "<td style='display: none;'>" + x._id + "</td>"
+                dt += "<td>" +
+                    "<a href='#' class='text-info edt'><i class='fas fa-pencil-alt'></i></a> &nbsp; | &nbsp;" +
+                    "<a href='#' class='text-danger del'><i class='far fa-trash-alt'></i></a>"
+                    + "</td>";
+                var d = new Date(x.bdate);
+                d = d.getUTCFullYear() + "-" + (d.getUTCMonth() + 1) + "-" + d.getUTCDate()
+                dt += "<td>" + d + "</td>";
+                dt += "<td>" + x.supply + "</td>";
+                dt += "<td>" + x.item + "</td>";
+                dt += "<td>" + x.hsn + "</td>";
+                dt += "<td>" + x.qty + "</td>";
+                dt += "<td>" + x.rate + "</td>";
+                dt += "<td>" + x.total + "</td>";
+                dt += "<td>" + x.project + "</td>";
+                dt += "</tr>";
+                ACCITEM.push(x.item);
+                ACCSUPPLY.push(x.supply);
+                ACCUOM.push(x.uom);
+                ACCPROJECT.push(x.project);
+            });
+            $("#lstTable_stock_reg_tbody").append(dt);
+        },
+        error: function (e) {
+            alert(JSON.stringify(e));
+        }
+    })
+
+    $("#item").autocomplete({
+        source: ACCITEM
+    });
+    $("#supply").autocomplete({
+        source: ACCSUPPLY
+    });
+    $("#uom").autocomplete({
+        source: ACCUOM
+    });
+    $("#project").autocomplete({
+        source: ACCPROJECT
+    });
+}
+
+$('#lstTable_stock_reg').on('click', '.edt', function () {
+    var currow = $(this).closest('tr');
+
+    $.ajax({
+        type: "POST",
+        url: '/stock/get_item',
+        data: { id: currow.find('td:eq(0)').text() },
+        success: function (data) {
+            $("#id").val(currow.find('td:eq(0)').text())
+            $("#type").val(data.type)
+            $("#bno").val(data.bno)
+            $("#bdate").val(currow.find('td:eq(2)').text())
+            $("#supply").val(data.supply)
+            $("#item").val(data.item)
+            $("#hsn").val(data.hsn)
+            $("#qty").val(data.qty)
+            $("#uom").val(data.uom)
+            $("#rate").val(data.rate)
+            $("#total").val(data.total)
+            $("#project").val(data.project)
+            $.ajax({
+                type: "POST",
+                url: '/stock/get_item_by_name',
+                data: { item: $("#item").val() },
+                success: function (data) {
+                    $("#qtyh").val(data.qty)
+                    $("#qtyh1").val(data.qty)
+                },
+                error: function (e) {
+                    alert(JSON.stringify(e));
+                }
+            });
+        },
+        error: function (e) {
+            alert(JSON.stringify(e));
+        }
+    });
+});
+
+$('#lstTable_stock_reg').on('click', '.del', function () {
+    var currow = $(this).closest('tr');
+    alert(currow.find('td:eq(0)').text());
+});
+
+<table class="table table-bordered table-sm border-danger" id="lstTable_stock"
+                style="display: inline-block; height: 260px; overflow: auto;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ITEM NAME</th>
+                        <th>HSN CODE</th>
+                        <th>QTY IN STOCK</th>
+                        <th>RATE</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <thead class="thead-dark">
+                    <tr>
+                        <th colspan="5">
+                            <input class="form-control" type="text" placeholder="Search" id="fetch_stock" />
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="lstTable_stock_tbody">
+
+                </tbody>
+            </table>
+
+            <table class="table table-bordered table-sm border-success" id="lstTable_stock_reg"
+                style="display: inline-block; height: 270px; overflow: auto;">
+                <thead class="table-dark">
+                    <th style='display: none;'></th>
+                    <th>ACTION</th>
+                    <th>DATE</th>
+                    <th>SUPPLIER/SUPPLY TO</th>
+                    <th>ITEM NAME</th>
+                    <th>HSN CODE</th>
+                    <th>QTY</th>
+                    <th>RATE</th>
+                    <th>TOTAL</th>
+                    <th>PROJECT</th>
+                </thead>
+                <thead class="thead-dark">
+                    <th colspan="9">
+                        <input class="form-control" type="text" placeholder="Search" id="fetch_stock_reg" />
+                    </th>
+                </thead>
+                <tbody id="lstTable_stock_reg_tbody"></tbody>
+            </table>
+
+            $("#fetch_stock_reg").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#lstTable_stock_reg_tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+

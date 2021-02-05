@@ -1,0 +1,120 @@
+<meta name="csrf-token" content=<%= csrfToken %>>
+<div id="dlg">
+    <form id="add" method="POST" action="/stock/save">
+        <table class="table table-bordered table-hover table-sm">
+            <tr>
+                <td colspan="2">
+                    <input type="hidden" name="id" id="id" />
+                </td>
+            </tr>
+            <tr>
+                <td>TRANSACTION TYPE</td>
+                <td>
+                    <select name="type" id="type" class="form-control">
+                        <option value="SALE">SALE</option>
+                        <option value="PURCHASE">PURCHASE</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>BILL NO</td>
+                <td><input class="form-control ab" type="text" placeholder="BILL NO" name="bno" id="bno" required />
+                </td>
+            </tr>
+            <tr>
+                <td>BILL DATE</td>
+                <td><input class="form-control ab" type="date" placeholder="BILL DATE" name="bdate" id="bdate" required />
+                </td>
+            </tr>
+            <tr>
+                <td>SUPPLIER / SUPPLY TO</td>
+                <td><input class="form-control ab" type="text" placeholder="SUPPLIER / SUPPLY TO" name="supply" id="supply"
+                        required /></td>
+            </tr>
+            <tr>
+                <td>ITEM NAME</td>
+                <td><input class="form-control ab" type="text" placeholder="ITEM NAME" name="item" id="item" required />
+                </td>
+            </tr>
+            <tr>
+                <td>HSN CODE</td>
+                <td><input class="form-control ab" type="text" placeholder="HSN CODE" name="hsn" id="hsn" /></td>
+            </tr>
+            <tr>
+                <td>QUANTITY</td>
+                <td><input class="form-control ab" type="number" placeholder="QUANTITY" name="qty" id="qty" required />
+                </td>
+            </tr>
+            <tr>
+                <td>QUANTITY IN HAND</td>
+                <td><input class="form-control ab" type="number" placeholder="QUANTITY IN HAND" name="qtyh" id="qtyh"
+                        required />
+                    <input class="form-control ab" type="hidden" name="qtyh1" id="qtyh1" />
+                </td>
+            </tr>
+            <tr>
+                <td>U.O.M</td>
+                <td><input class="form-control ab" type="text" placeholder="U.O.M" name="uom" id="uom" required /></td>
+            </tr>
+            <tr>
+                <td>RATE</td>
+                <td><input class="form-control ab" type="number" step="any" placeholder="RATE" name="rate" id="rate"
+                        required />
+                </td>
+            </tr>
+            <tr>
+                <td>TOTAL</td>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <input class="form-control ab" type="number" step="any" placeholder="TOTAL" name="total"
+                                id="total" required /></div>
+                        <div class="col-sm-6"><input class="form-control" type="number" step="any" placeholder="TOTAL"
+                                name="total1" id="total1" required /></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>GST RATE</td>
+                <td><input class="form-control ab" type="number" placeholder="GST RATE" name="grate" id="grate"
+                        required /></td>
+            </tr>
+            <tr>
+                <td>PROJECT NAME</td>
+                <td><input class="form-control ab" type="text" placeholder="PROJECT NAME" name="project" id="project"
+                        required /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Save" class="btn btn-info btn-sm" id="add-btn" />
+                    <input type="reset" value="Reset" class="btn btn-danger btn-sm" id="rst-btn" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <table id="jqgrid"></table>
+        <div id="pager2"></div>
+    </div>
+    <div class="col-sm-8">
+        <table id="jqgrid1" class="cl_et"></table>
+        <div id="pager"></div>
+    </div>
+</div>
+<div id='loader' style="
+display: none;
+position: fixed;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+width: 200px;
+height: 100px;
+margin: auto;
+z-index: 10000;">
+    <img src='/Reload-1s-200px.gif' width='195px' height='98px'>
+</div>
+
+<script src="/js/stock/stc.js"></script>
