@@ -9,6 +9,11 @@ exports.login = (req, res) => {
         viewTitle: "ANJAN - LOGIN", token: req.cookies.user
     })
 };
+exports.register = (req, res) => {
+    res.render('register', {
+        viewTitle: "ANJAN - SIGN UP"
+    })
+};
 
 exports.dash = (req, res) => {
     var role1 = req.cookies.role;

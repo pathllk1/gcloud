@@ -11,6 +11,7 @@ module.exports = function (app) {
 
     app.get("/", controller.home);
     app.get("/login", controller.login);
+    app.get("/register", controller.register);
     app.get("/dash", controller.dash);
     app.get("/dash_auth", [authJwt.verifyToken], controller.dash_auth);
     app.get("/logout", controller.logout);
