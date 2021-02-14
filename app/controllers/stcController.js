@@ -28,6 +28,8 @@ router.post('/del_upd', [authJwt.verifyToken], (req, res) => {
             rate: req.body.rate,
             grate: req.body.grate,
             total: req.body.total,
+            user: req.body.user,
+            firm: req.body.firm
         }, { upsert: true }, (err, doc) => {
             if (!err)
                 res.send("Data Modified!");
@@ -47,6 +49,8 @@ function updateRecord(req, res) {
             rate: req.body.rate,
             grate: req.body.grate,
             total: req.body.total1,
+            user: req.body.user,
+            firm: req.body.firm
         }, { upsert: true }, (err, doc) => {
             if (err)
                 res.send("Error in Data Saving: " + err);
@@ -68,6 +72,8 @@ function updateRecord(req, res) {
             p1.grate= req.body.grate,
             p1.total = req.body.total;
             p1.project = req.body.project;
+            p1.user = req.body.user;
+            p1.firm = req.body.firm;
             p1.save().then(emp => {
                 res.json('Stock Updated Successfully');
             }).catch(err => {
@@ -87,6 +93,8 @@ function insertRecord(req, res) {
             rate: req.body.rate,
             grate: req.body.grate,
             total: req.body.total1,
+            user: req.body.user,
+            firm: req.body.firm
         }, { upsert: true }, (err, doc) => {
             if (err)
                 res.send("Error in Data Saving: " + err);
@@ -107,6 +115,8 @@ function insertRecord(req, res) {
                 p.discamt= req.body.discamt,
                 p.total = req.body.total;
                 p.project = req.body.project;
+                p.user = req.body.user;
+                p.firm = req.body.firm;
                 p.save((err, doc) => {
                     if (err)
                         res.send("Error in Data Saving: " + err);

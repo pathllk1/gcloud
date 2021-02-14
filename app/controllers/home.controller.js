@@ -35,5 +35,6 @@ exports.logout = (req, res) => {
     res.clearCookie('token');
     res.clearCookie('user');
     res.clearCookie('role');
+    res.clearCookie('firm');
     res.redirect("/login");
 }

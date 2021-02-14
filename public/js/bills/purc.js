@@ -1,5 +1,7 @@
 var db = openDatabase('ANJAN', '1.0', 'ANJAN', 5 * 1024 * 1024);
 var nitem = false;
+var ntt = 0;
+var dup_item = false;
 $(document).ready(function () {
     $.ajaxSetup({
         headers: {
@@ -7,10 +9,13 @@ $(document).ready(function () {
         }
     })
     $.ajax({
-        url: '/dash',
+        url: '/dash_auth',
         method: 'GET',
         success: function (dta) {
             console.log('succes: ' + dta);
+        },
+        error: function(e){
+            document.location.href ="/logout";
         }
     });
     db.transaction(function (tx) {
@@ -71,23 +76,41 @@ var frm = $('#add');
 frm.submit(function (e) {
     e.preventDefault();
     db.transaction(function (tx) {
-        var type = "PURCHASE"
-        var item = $("#item").val()
-        var supply = $("#supply").val()
-        var bno = $("#bno").val()
-        var bdate = $("#bdate").val()
-        var hsn = $("#hsn").val()
-        var qty = $("#qty").val()
-        var qtyh = $("#qtyh").val()
-        var uom = $("#uom").val()
-        var rate = $("#rate").val()
-        var grate = $("#grate").val()
-        var disc1 = $("#disc1").val()
-        var discamt = $("#discamt").val()
-        var total = $("#total").val()
-        var project = $("#project").val()
-        tx.executeSql('insert into purc(type, bno, bdate, supply, item, hsn, qty, qtyh, uom, rate, grate, disc, discamt, total, project) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [type, bno, bdate, supply, item, hsn, qty, qtyh, uom, rate, grate, disc1, discamt, total, project], displayAll());
+        tx.executeSql('SELECT * FROM purc where item = ?', [$("#item").val()], function (tx, results) {
+            var n = results.rows.length;
+            if(n >= 1){
+                var x = results.rows.item(0);
+                var qty1 = parseFloat($("#qty").val()) + parseFloat(x.qty);
+                var qtyh1 = parseFloat($("#qty").val()) + parseFloat(x.qtyh);
+                var total1 = parseFloat(x.total) + parseFloat($("#total").val());
+                var disam = parseFloat(x.discamt) + parseFloat($("#discamt").val());
+                var dis = parseFloat(disam) / (parseFloat(qty1) * parseFloat($("#rate").val())) * 100;
+                db.transaction(function (tx) {
+                    tx.executeSql('update purc set qty=?, qtyh=?, total=?, discamt=?, disc=?',[qty1, qtyh1, total1, disam, dis],displayAll());
+                });
+            }else{
+                db.transaction(function (tx) {
+                    var type = "PURCHASE"
+                    var item = $("#item").val()
+                    var supply = $("#supply").val()
+                    var bno = $("#bno").val()
+                    var bdate = $("#bdate").val()
+                    var hsn = $("#hsn").val()
+                    var uom = $("#uom").val()
+                    var rate = $("#rate").val()
+                    var grate = $("#grate").val()
+                    var disc1 = $("#disc1").val()
+                    var discamt = $("#discamt").val()
+                    var project = $("#project").val()
+                    var qty = $("#qty").val()
+                    var qtyh = $("#qtyh").val()
+                    var total = $("#total").val()
+                    tx.executeSql('insert into purc(type, bno, bdate, supply, item, hsn, qty, qtyh, uom, rate, grate, disc, discamt, total, project) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [type, bno, bdate, supply, item, hsn, qty, qtyh, uom, rate, grate, disc1, discamt, total, project], displayAll());
+                });
+            }
+        });
     });
+    
     var gtot = $("#gtot").val();
     var disc = $("#disc").val();
     var cgst = $("#cgst").val();
@@ -102,14 +125,16 @@ frm.submit(function (e) {
     $("#sgst").val(parseFloat(sgst) + parseFloat((tot * grte / 100) / 2));
     $("#igst").val(parseFloat(igst) + parseFloat(tot * grte / 100));
     $("#ntot").val(parseFloat(ntot) + parseFloat(tot) + (parseFloat(tot * grte / 100)));
+    ntt = $("#ntot").val();
 })
 
 function displayAll() {
     $.jgrid.gridUnload("jqgrid1");
     $("#jqgrid1").jqGrid({
         datatype: "local",
-        colNames: ['ITEM', 'HSN', 'QNTY', 'RATE', 'GST RATE', 'DISCOUNT', 'TOTAL', 'PROJECT', 'uom'],
+        colNames: ['rid','ITEM', 'HSN', 'QNTY', 'RATE', 'GST RATE', 'DISCOUNT', 'TOTAL', 'PROJECT', 'uom'],
         colModel: [
+            { name: 'rid', index: 'rid' , hidden: true},
             { name: 'item', index: 'item', width: 200 },
             { name: 'hsn', index: 'hsn', width: 120 },
             { name: 'qty', index: 'qty', width: 120 },
@@ -143,53 +168,27 @@ function displayAll() {
         caption: "", buttonicon: "ui-icon-pencil", position: "last", onClickButton: function () {
             var myGrid = $('#jqgrid1');
             var selRowId = myGrid.jqGrid('getGridParam', 'selrow');
-            var tp = myGrid.jqGrid('getCell', selRowId, '_id');
+            var tp = myGrid.jqGrid('getCell', selRowId, 'rid');
             try {
-                $.ajax({
-                    type: "POST",
-                    url: '/stock/get_item',
-                    data: { id: tp },
-                    success: function (data) {
-                        $("#id").val(data._id)
-                        $("#type").val(data.type)
-                        $("#item").val(data.item)
-                        $("#supply").val(data.supply)
-                        $("#bno").val(data.bno)
-                        $("#bdate").val(data.bdate)
-                        $("#hsn").val(data.hsn)
-                        $("#qty").val(data.qty)
-                        $("#qtyh1").val(data.qty)
-                        $("#uom").val(data.uom)
-                        $("#rate").val(data.rate)
-                        $("#grate").val(data.grate)
-                        $("#total").val(data.total)
-                        $("#project").val(data.project)
-                        $.ajax({
-                            type: "POST",
-                            url: '/stock/get_item_by_name',
-                            data: { item: $("#item").val() },
-                            success: function (data) {
-                                $("#qtyh").val(data.qty)
-                                $("#total1").val(parseInt($("#qtyh").val()) * parseInt($("#rate").val()))
-                                emode = true
-                                qt = $("#qtyh").val()
-                            },
-                            error: function (e) {
-                                alert(JSON.stringify(e));
-                            }
-                        });
-                    },
-                    error: function (e) {
-                        alert(JSON.stringify(e));
-                    },
-                    beforeSend: function () {
-                        $("#loader").show();
-                    },
-                    complete: function (data) {
-                        $("#loader").hide();
-                    }
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM purc where rid = ?', [tp], function (tx, results) {
+                        var x = results.rows.item(0);
+                        $("#type").val(x.type)
+                        $("#item").val(x.item)
+                        $("#supply").val(x.supply)
+                        $("#hsn").val(x.hsn)
+                        $("#qty").val(x.qty)
+                        $("#qtyh1").val(x.qty)
+                        $("#uom").val(x.uom)
+                        $("#rate").val(x.rate)
+                        $("#grate").val(x.grate)
+                        $("#total").val(x.total)
+                        $("#disc1").val(x.disc)
+                        $("#discamt").val(x.discamt)
+                        $("#project").val(x.project)
+                    });
                 });
-                $('#dlg').dialog('open');
+                $('#dlg1').dialog('open');
             }
             catch (ex) {
                 alert(ex)
@@ -301,6 +300,7 @@ function displayAll() {
             for (var i = 0; i < n; i++) {
                 var x = results.rows.item(i);
                 var row = {};
+                row["rid"] = x.rid;
                 row["item"] = x.item;
                 row["hsn"] = x.hsn;
                 row["qty"] = x.qty;
@@ -320,11 +320,13 @@ function displayAll() {
 $("#qty").on("input", function (e) {
     if (nitem == true) {
         $("#total").val(parseInt($("#qty").val()) * parseInt($("#rate").val()));
+        $("#total2").val(parseInt($("#qty").val()) * parseInt($("#rate").val()));
         $("#qtyh").val($("#qty").val())
         $("#total1").val(parseInt($("#qty").val()) * parseInt($("#rate").val()));
     }
     else {
         $("#total").val(parseInt($("#qty").val()) * parseInt($("#rate").val()));
+        $("#total2").val(parseInt($("#qty").val()) * parseInt($("#rate").val()));
         $("#qtyh").val(parseInt($("#qtyh1").val()) + parseInt($("#qty").val()))
         $("#total1").val(parseInt($("#qtyh").val()) * parseInt($("#rate").val()));
     }
@@ -335,8 +337,8 @@ $("#rate").on("input", function (e) {
 });
 
 $("#disc1").on("input", function (e) {
-    var k = $("#total1").val() * $("#disc1").val() / 100
-    $("#total").val($("#total1").val() - k)
+    var k = $("#total2").val() * $("#disc1").val() / 100
+    $("#total").val($("#total2").val() - k)
     $("#discamt").val(k)
 })
 
@@ -407,7 +409,9 @@ $("#fsave").click(function (e) {
                             disc: x.disc,
                             discamt: x.discamt,
                             project: x.project,
-                            total: x.total
+                            total: x.total,
+                            user: $.cookie('user'),
+                            firm: $.cookie('firm')
                         }
                         $.ajax({
                             type: "POST",
@@ -495,5 +499,9 @@ $("#bdate").keydown(function (e) {
         e.preventDefault()
         $("#supply").focus();
     }
+})
+
+$("#rof").on("input", function (e) {
+    $("#ntot").val(parseFloat(ntt) + parseFloat($("#rof").val()))
 })
 

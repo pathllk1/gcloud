@@ -18,7 +18,9 @@ const STOCK_REGSchema = new mongoose.Schema({
     disc: {type: Number},
     discamt: {type: Number},
     total: {type: Number},
-    project: {type: String}
+    project: {type: String},
+    user: {type: String},
+    firm: {type: String}
 });
 
 const STOCK_REG = mongoose.model('STOCK_REG', STOCK_REGSchema);

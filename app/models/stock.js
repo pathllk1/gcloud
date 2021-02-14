@@ -7,7 +7,9 @@ const STOCKSchema = new mongoose.Schema({
     uom: {type: String},
     rate: {type: Number},
     grate: {type: Number},
-    total: {type: Number}
+    total: {type: Number},
+    user: {type: String},
+    firm: {type: String}
 });
 
 const STOCK = mongoose.model('STOCK', STOCKSchema);

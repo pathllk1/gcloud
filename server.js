@@ -46,6 +46,7 @@ require("./app/routes/user.routes")(app);
 require("./app/routes/home.routes")(app);
 app.use('/stock', require('./app/controllers/stcController'));
 app.use("/purc", require("./app/controllers/billController"));
+app.use("/admin", require("./app/controllers/admin.controller"));
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

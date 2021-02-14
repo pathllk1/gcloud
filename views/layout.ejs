@@ -32,7 +32,9 @@
       </button>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
-
+          <% if(locals.ADMIN) { %>
+            <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
+          <% } %>
         </ul>
         <ul class="navbar-nav ml-auto">
           <% if(locals.token) { %>
@@ -45,9 +47,6 @@
           <% } else { %>
           <li class="nav-item"><a class="nav-link" href="/login"><i class="far fa-user"></i> Login</a></li>
           <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-          <% } %>
-          <% if(locals.ADMIN) { %>
-            
           <% } %>
         </ul>
       </div>

@@ -1,5 +1,4 @@
-<h1 class="mt-4">Dashboard</h1>
-<p class="lead mb-3">Welcome </p>
+<h1>Admin Page!</h1>
 
 <script>
     $.ajaxSetup({
@@ -9,10 +8,10 @@
     })
     $(document).ready(function (e) {
         $.ajax({
-            url: '/dash',
+            url: '/admin/chk_admin',
             method: 'GET',
             success: function (dta) {
-                console.log('succes: ' + dta);
+                console.log(dta);
             },
             error: function(e){
                 document.location.href ="/logout";
